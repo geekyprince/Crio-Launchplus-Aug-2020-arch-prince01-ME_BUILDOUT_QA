@@ -10,7 +10,7 @@ GRADLE_OPTS="-Dgradle.user.home=~/gradle_cache"    #
 
 
 
-gradlew clean bootrun &
+./gradlew clean bootrun &
 
 while ! netstat -tna | grep 'LISTEN\>' | grep -q ':8081\>'; do
   echo "waiting for spring application to start"
