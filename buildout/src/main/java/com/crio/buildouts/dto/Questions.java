@@ -53,9 +53,9 @@ public class Questions {
 
   private List<String> userAnswer;
 
-  private List<String> correct = new ArrayList<>();
+  private List<String> correct;
 
-  private String explanation = null;
+  private String explanation;
 
   private boolean answerCorrect;
 
