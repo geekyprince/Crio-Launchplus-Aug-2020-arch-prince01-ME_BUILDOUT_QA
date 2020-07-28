@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AssessmentConfig {
+
   private String name;
   private String url;
   private String method;

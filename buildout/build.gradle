@@ -1,7 +1,5 @@
-
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
+import io.spring.gradle.dependencymanagement.DependencyManagementPlugin
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 buildscript {
     repositories {
@@ -11,12 +9,64 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:$rootProject.ext.springBootVersion")
     }
 }
-
+plugins {
+    id 'org.springframework.boot' version '2.2.0.RELEASE'
+    id "io.spring.dependency-management"
+    id 'org.asciidoctor.convert' version '1.5.8'
+    id "io.freefair.lombok" version "5.1.0"
+    id 'java'
+}
+version '1.0-SNAPSHOT'
+sourceCompatibility = 1.8
+apply plugin: SpringBootPlugin
+apply plugin: DependencyManagementPlugin
 configurations {
     implementationOnly {
         extendsFrom annotationProcessor
     }
 }
-
+repositories {
+    mavenCentral()
+}
+jar {
+    archiveBaseName = "buildoutsbackend"
+    archiveVersion = "v1"
+    enabled = true
+}
+bootJar {
+    enabled = false
+}
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    runtimeOnly "org.springframework.boot:spring-boot-devtools"
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    compile("org.springframework.boot:spring-boot-starter-log4j2:$rootProject.ext.springBootVersion") {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-core'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-jul'
+        exclude group: 'org.slf4j', module: 'jul-to-slf4j'
+    }
+    compile("com.fasterxml.jackson.core:jackson-core:$rootProject.ext.jacksonVersion")
+    compile("com.fasterxml.jackson.core:jackson-annotations:$rootProject.ext.jacksonVersion")
+    compile("com.fasterxml.jackson.core:jackson-databind:$rootProject.ext.jacksonVersion")
+    // required for lombok
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+    // required for modelmapper
+    compile group: 'javax.inject', name: 'javax.inject', version: '1'
+    implementation "org.modelmapper:modelmapper:$rootProject.ext.modelMapperVersion"
+    // required for JUnit
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$rootProject.ext.junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$rootProject.ext.junitVersion"
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+test {
+    useJUnitPlatform()
+}
 apply plugin: 'org.springframework.boot'
-
